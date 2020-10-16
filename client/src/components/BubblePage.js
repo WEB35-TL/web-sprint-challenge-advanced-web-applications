@@ -1,20 +1,32 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect, Fragment } from 'react'
+import { axiosWithAuth } from '../utils/axiosWithAuth'
 
-import Bubbles from "./Bubbles";
-import ColorList from "./ColorList";
+import Bubbles from './Bubbles'
+import ColorList from './ColorList'
 
 const BubblePage = () => {
-  const [colorList, setColorList] = useState([]);
-  // fetch your colors data from the server when the component mounts
-  // set that data to the colorList state property
+	const [colorList, setColorList] = useState([])
+	// fetch your colors data from the server when the component mounts
+	// set that data to the colorList state property
 
-  return (
-    <>
-      <ColorList colors={colorList} updateColors={setColorList} />
-      <Bubbles colors={colorList} />
-    </>
-  );
-};
+	useEffect(() => {
+		//axios get request for colors with axios authority
+		axiosWithAuth()
+			.get('/api/colors')
+			.then(res => {
+				console.log(res)
+				setColorList(res.data)
+			})
+			.catch(err => console.log(err.response))
+	}, [])
 
-export default BubblePage;
+	return (
+		<Fragment>
+			{/* //trying to rember how to get get request to display without button click */}
+			<ColorList colors={colorList} updateColors={setColorList} />
+			<Bubbles colors={colorList} />
+		</Fragment>
+	)
+}
+
+export default BubblePage
